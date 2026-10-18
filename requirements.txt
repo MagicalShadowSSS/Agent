@@ -1,0 +1,11 @@
+numpy
+scipy
+Pillow
+sentence-transformers
+transformers>=4.51
+jsonschema
+lm-format-enforcer
+easydict
+unidecode
+torch
+torchvision
