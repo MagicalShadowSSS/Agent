@@ -19,6 +19,7 @@ PROJECT = Path(os.environ.get('SGMEA_PROJECT_ROOT', str(Path(__file__).resolve()
 RANK_ROOT = Path(os.environ.get('SGMEA_RANK_ROOT', str(PROJECT / 'outputs' / 'candidate' / 'rankings' / 'all')))
 INTEGRATION = ROOT / "agent_data"
 MMKG = Path(os.environ.get('SGMEA_MMKGB_ROOT', str(PROJECT / 'data' / 'mmkg')))
+DBP = Path(os.environ.get('SGMEA_DBP_ROOT', str(MMKG / 'DBP15K')))
 
 
 def read_map(path: Path) -> dict[str, str]:
@@ -168,14 +169,14 @@ def main():
         pass
     INTEGRATION.mkdir(parents=True, exist_ok=True)
     for ds in ("zh_en", "ja_en", "fr_en"):
-        src = PROJECT / "dataset" / "DBP15K" / ds
+        src = DBP / ds
         dst = INTEGRATION / "DBP15K" / ds
         link_or_copy(src, dst)
         # dataset_registry keeps the historical DBP layout when data_root is
         # supplied, while FB families use root/<dataset>.  Mirror the DBP
         # split at the root so one data_root can serve all five datasets.
         link_or_copy(src, INTEGRATION / ds)
-    link_or_copy(PROJECT / "dataset" / "FBDB15K", INTEGRATION / "FBDB15K")
+    link_or_copy(MMKG / "FBDB15K" / "norm", INTEGRATION / "FBDB15K")
     fbyg = INTEGRATION / "FBYG15K"
     prep = prepare_fbyg(fbyg) if not (fbyg / "yg_rel_triples").exists() else {"reused": True}
     reports = {"FBYG15K_prepare": prep}
